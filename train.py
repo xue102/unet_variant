@@ -4,6 +4,7 @@ from torch import optim
 import torch.nn as nn
 import torch
 
+
 def train_net(net, device, data_path, epochs=40, batch_size=1, lr=0.00001):
     # 加载训练集
     isbi_dataset = ISBI_Loader(data_path)
@@ -38,6 +39,7 @@ def train_net(net, device, data_path, epochs=40, batch_size=1, lr=0.00001):
             # 更新参数
             loss.backward()
             optimizer.step()
+
 
 if __name__ == "__main__":
     # 选择设备，有cuda用cuda，没有就用cpu

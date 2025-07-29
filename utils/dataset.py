@@ -5,6 +5,7 @@ import glob
 from torch.utils.data import Dataset
 import random
 
+
 class ISBI_Loader(Dataset):
     def __init__(self, data_path):
         # 初始化函数，读取所有data_path下的图片
@@ -45,7 +46,7 @@ class ISBI_Loader(Dataset):
 
     
 if __name__ == "__main__":
-    isbi_dataset = ISBI_Loader("data/train/")
+    isbi_dataset = ISBI_Loader("../data/train/")
     print("数据个数：", len(isbi_dataset))
     train_loader = torch.utils.data.DataLoader(dataset=isbi_dataset,
                                                batch_size=2, 
