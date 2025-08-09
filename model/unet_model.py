@@ -2,7 +2,6 @@
 """Refer https://github.com/milesial/Pytorch-UNet/blob/master/unet/unet_model.py"""
 
 import torch.nn.functional as F
-
 from .unet_parts import *
 
 

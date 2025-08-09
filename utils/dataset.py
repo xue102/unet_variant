@@ -26,18 +26,44 @@ class ISBI_Loader(Dataset):
         image = cv2.imread(image_path)
         label = cv2.imread(label_path)
         # 将数据转为单通道的图片
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        label = cv2.cvtColor(label, cv2.COLOR_BGR2GRAY)
+        # 根据输入通道数处理
+        if len(image.shape) == 3:  # 多通道图像（如RGB/RGBA）
+            if image.shape[2] == 4:  # RGBA图像
+                image = cv2.cvtColor(image, cv2.COLOR_RGBA2GRAY)
+            elif image.shape[2] == 3:  # RGB图像
+                image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+            else:
+                raise ValueError(f"不支持的通道数: {image.shape[2]}")
+        elif len(image.shape) == 2:  # 已经是灰度图
+            pass
+        else:
+            raise ValueError(f"不支持的图像维度: {image.shape}")
+
+        if len(label.shape) == 3:  # 多通道图像（如RGB/RGBA）
+            if label.shape[2] == 4:  # RGBA图像
+                label = cv2.cvtColor(label, cv2.COLOR_RGBA2GRAY)
+            elif label.shape[2] == 3:  # RGB图像
+                label = cv2.cvtColor(label, cv2.COLOR_RGB2GRAY)
+            else:
+                raise ValueError(f"不支持的通道数: {label.shape[2]}")
+        elif len(label.shape) == 2:  # 已经是灰度图
+            pass
+        else:
+            raise ValueError(f"不支持的图像维度: {label.shape}")
+        # image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # label = cv2.cvtColor(label, cv2.COLOR_BGR2GRAY)
+        image = cv2.resize(image, (512, 512))
+        label = cv2.resize(label, (512,512))
         image = image.reshape(1, image.shape[0], image.shape[1])
         label = label.reshape(1, label.shape[0], label.shape[1])
         # 处理标签，将像素值为255的改为1
         if label.max() > 1:
             label = label / 255
-        # 随机进行数据增强，为2时不做处理
-        flipCode = random.choice([-1, 0, 1, 2])
-        if flipCode != 2:
-            image = self.augment(image, flipCode)
-            label = self.augment(label, flipCode)
+        # # 随机进行数据增强，为2时不做处理
+        # flipCode = random.choice([-1, 0, 1, 2])
+        # if flipCode != 2:
+        #     image = self.augment(image, flipCode)
+        #     label = self.augment(label, flipCode)
         return image, label
 
     def __len__(self):
